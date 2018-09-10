@@ -16,9 +16,10 @@
 #include <QInputDialog>
 #include <QMenu>
 #include <QPainter>
-#include <QSettings>
 #include <QSharedPointer>
 #include <QShortcut>
+
+#include <TSettings.h>
 
 #define NUKE_SECONDS_DELAY 8
 #define MAIN_LOGO_RIGHT_MARGIN 5
@@ -367,7 +368,7 @@ MainWindow::MainWindow(QWidget *parent)
                                     "effect on application restart."));
     });
     connect(_ui.dismissButton, &QPushButton::clicked, [&]() {
-        QSettings settings;
+        TSettings settings;
         settings.setValue("app/default_jobs_dismissed", true);
         _ui.defaultJobs->hide();
         _ui.addJobButton->show();
@@ -449,7 +450,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::loadSettings()
 {
-    QSettings settings;
+    TSettings settings;
 
     _ui.accountCreditLabel->setText(
         settings.value("tarsnap/credit", tr("click login button")).toString());
@@ -542,7 +543,7 @@ void MainWindow::loadSettings()
 
 void MainWindow::initializeMainWindow()
 {
-    QSettings settings;
+    TSettings settings;
     // Check if we should show a "credit might be out of date" warning.
     QDate creditDate = settings.value("tarsnap/credit_date", QDate()).toDate();
     if(creditDate.isValid())
@@ -865,7 +866,7 @@ void MainWindow::overallStatsChanged(quint64 sizeTotal, quint64 sizeCompressed,
 void MainWindow::updateTarsnapVersion(QString versionString)
 {
     _ui.tarsnapVersionLabel->setText(versionString);
-    QSettings settings;
+    TSettings settings;
     settings.setValue("tarsnap/version", versionString);
 }
 
@@ -1036,7 +1037,7 @@ void MainWindow::updateStatusMessage(QString message, QString detail)
 
 void MainWindow::commitSettings()
 {
-    QSettings settings;
+    TSettings settings;
     settings.setValue("tarsnap/path", _ui.tarsnapPathLineEdit->text());
     settings.setValue("tarsnap/cache", _ui.tarsnapCacheLineEdit->text());
     settings.setValue("tarsnap/key", _ui.accountMachineKeyLineEdit->text());
@@ -1213,7 +1214,7 @@ void MainWindow::saveKeyId(QString key, quint64 id)
 {
     if(key == _ui.accountMachineKeyLineEdit->text())
     {
-        QSettings settings;
+        TSettings settings;
         settings.setValue("tarsnap/key_id", id);
         settings.sync();
     }
@@ -1539,7 +1540,7 @@ void MainWindow::tarsnapError(TarsnapError error)
 
 void MainWindow::updateAccountCredit(qreal credit, QDate date)
 {
-    QSettings settings;
+    TSettings settings;
     settings.setValue("tarsnap/credit", QString::number(credit, 'f', 18));
     settings.setValue("tarsnap/credit_date", date);
     _ui.accountCreditLabel->setText(QString::number(credit, 'f', 18));
@@ -1552,7 +1553,7 @@ void MainWindow::updateLastMachineActivity(QStringList activityFields)
     if(activityFields.size() < 2)
         return;
     QString   machineActivity = activityFields[0] + ' ' + activityFields[1];
-    QSettings settings;
+    TSettings settings;
     settings.setValue("tarsnap/machine_activity", machineActivity);
     _ui.machineActivity->setText(machineActivity);
     _ui.machineActivity->setToolTip(activityFields.join(' '));
@@ -1611,7 +1612,7 @@ void MainWindow::showJobsListMenu(const QPoint &pos)
 
 void MainWindow::addDefaultJobs()
 {
-    QSettings settings;
+    TSettings settings;
     foreach(QString path, DEFAULT_JOBS)
     {
         QDir dir(QDir::home());
