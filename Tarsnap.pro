@@ -29,6 +29,7 @@ DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 #QMAKE_TARGET_COPYRIGHT = copyright Tarsnap Backup Inc.
 
 SOURCES +=						\
+	lib/core/TSettings.cpp				\
 	lib/util/optparse.c				\
 	lib/util/optparse_helper.c			\
 	libcperciva/util/getopt.c			\
@@ -70,6 +71,7 @@ SOURCES +=						\
 	src/widgets/setupdialog.cpp
 
 HEADERS +=						\
+	lib/core/TSettings.h				\
 	lib/util/optparse.h				\
 	lib/util/optparse_helper.h			\
 	libcperciva/util/getopt.h			\
@@ -113,6 +115,7 @@ HEADERS +=						\
 
 INCLUDEPATH += src/widgets/				\
 		+= libcperciva/util/			\
+		+= lib/core/				\
 		+= lib/util/				\
 		+= src/
 
@@ -170,7 +173,8 @@ osx {
     QMAKE_POST_LINK += /usr/libexec/PlistBuddy -c \"Set :CFBundleGetInfoString $${VERSION}\" $${INFO_PLIST_PATH} ;
 }
 
-format.commands = find src/ tests/ -name \"*.h\" -or -name \"*.cpp\" |	\
+format.commands = find src/ tests/ lib/core/				\
+			-name \"*.h\" -or -name \"*.cpp\" |		\
 			xargs clang-format -i
 QMAKE_EXTRA_TARGETS += format
 
